@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LAMPP en Fedora 40</title>
+    <meta name="author" content="adanji">
+    <link rel="shortcut icon" href="icon.png" type="image/x-icon">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <h2>Para instalar LAMPP (Linux, Apache, MySQL, PHP, and Perl) en Fedora 40, puedes seguir estos pasos detallados:
+    </h2>
+
+    <h3>Paso 1: Actualizar el sistema</h3>
+    <p>Primero, asegúrate de que tu sistema esté completamente actualizado.</p>
+    <pre><code>sudo dnf update -y</code></pre>
+
+    <h3>Paso 2: Instalar Apache</h3>
+    <p>Instala el servidor web Apache.</p>
+    <pre><code>sudo dnf install httpd -y</code></pre>
+    <p>Habilita e inicia el servicio de Apache.</p>
+    <pre><code>sudo systemctl enable httpd<br>sudo systemctl start httpd</code></pre>
+
+    <h3>Paso 3: Instalar MariaDB</h3>
+    <p>Instala MariaDB, que es una bifurcación de MySQL y generalmente se usa en Fedora.</p>
+    <pre><code>sudo dnf install mariadb-server mariadb -y</code></pre>
+    <p>Habilita e inicia el servicio de MariaDB.</p>
+    <pre><code>sudo systemctl enable mariadb<br>sudo systemctl start mariadb</code></pre>
+
+    <h3>Paso 4: Configurar MariaDB</h3>
+    <p>Asegura la instalación de MariaDB.</p>
+    <pre><code>sudo mysql_secure_installation</code></pre>
+    <p>Sigue las instrucciones en pantalla para configurar la contraseña de root y eliminar las cuentas anónimas, deshabilitar el inicio de sesión remoto de root y eliminar la base de datos de prueba.</p>
+
+    <h3>Paso 5: Instalar PHP</h3>
+    <p>Instala PHP junto con algunos módulos comunes que podrías necesitar.</p>
+    <pre><code>sudo dnf install php php-mysqlnd php-fpm php-opcache php-gd php-xml php-mbstring -y</code></pre>
+
+    <h3>Paso 6: Configurar Apache para usar PHP</h3>
+    <p>Edita el archivo de configuración de Apache para que utilice PHP. Abre el archivo /etc/httpd/conf.d/php.conf (si no existe, crea uno).</p>
+    <pre><code>sudo nano /etc/httpd/conf.d/php.conf</code></pre>
+    <p>Agrega las siguientes líneas dentro del bloque <code>&lt;IfModule mod_php.c&gt;</code></p>
+    <pre><code>&lt;IfModule mod_php.c&gt;
+    &lt;FilesMatch \.(php|phar)$&gt;
+        SetHandler application/x-httpd-php
+    &lt;/FilesMatch&gt;
+
+    &lt;FilesMatch "\.ph(p[2-7]?|tml)$"&gt;
+        SetHandler application/x-httpd-php
+    &lt;/FilesMatch&gt;
+
+    DirectoryIndex index.php
+&lt;/IfModule&gt;</code></pre>
+
+    <h3>Paso 7: Reiniciar Apache</h3>
+    <p>Reinicia el servidor Apache para aplicar los cambios.</p>
+    <pre><code>sudo systemctl restart httpd</code></pre>
+
+    <h3>Paso 8: Probar la instalación</h3>
+    <p>Crea un archivo PHP de prueba en el directorio raíz de tu servidor web para asegurarte de que todo esté
+        funcionando correctamente.</p>
+    <pre><code>echo "&lt;?php phpinfo(); ?&gt;" | sudo tee /var/www/html/info.php</code></pre>
+    <p>Abre tu navegador web y navega a <a href="http://localhost/info.php"
+            target="_blank">http://localhost/info.php</a>. Deberías ver la página de información de PHP, lo que indica
+        que PHP está funcionando correctamente con Apache.</p>
+
+    <h3>Paso 9: Instalar Perl (opcional)</h3>
+    <p>Si también necesitas Perl, puedes instalarlo fácilmente con:</p>
+    <pre><code>sudo dnf install perl -y</code></pre>
+
+    <h3>Paso 10: Seguridad y Configuración Adicional</h3>
+    <p>Para mejorar la seguridad y el rendimiento, realiza configuraciones adicionales y ajustes en Apache, MariaDB y
+        PHP según tus necesidades específicas.</p>
+
+    <p>¡Y eso es todo! Has instalado LAMPP en Fedora 40.</p>
+</body>
+
+</html>
